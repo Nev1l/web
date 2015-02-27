@@ -21,8 +21,9 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
-	<context:component-scan base-package="by.epam.semantic" />
-	
+	<context:component-scan base-package="by.epam.controllers" />
+	<context:component-scan base-package="by.epam.dao" />
+	<context:component-scan base-package="by.epam.implem" />
 	
 	
 </beans:beans>
