@@ -1,5 +1,6 @@
 package by.epam.sesame;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.config.RepositoryConfigException;
 import org.openrdf.repository.http.HTTPRepository;
+import org.openrdf.repository.manager.LocalRepositoryManager;
 import org.openrdf.repository.manager.RemoteRepositoryManager;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
@@ -51,9 +53,11 @@ public class TestSesame {
 		String repositoryID = "db";
 		RepositoryConnection conn = null;
 		try {
-
-			Repository rep = new HTTPRepository(sesameServer, repositoryID);
+			RemoteRepositoryManager manager = new RemoteRepositoryManager(sesameServer);
+			manager.initialize();
+			Repository rep = manager.getRepository(repositoryID);//new HTTPRepository(sesameServer, repositoryID);
 			rep.initialize();
+			conn = rep.getConnection();
 			String namespace = "http://www.semanticweb.org/viktar_kapachou/ontologies/2015/1/untitled-ontology-7#";
 			ValueFactory f = rep.getValueFactory();
 			conn = rep.getConnection();
@@ -83,6 +87,9 @@ public class TestSesame {
 			}
 		} catch (RepositoryException e) {
 			e.printStackTrace();
+		} catch (RepositoryConfigException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		} finally {
 			if (conn != null) {
 				try {

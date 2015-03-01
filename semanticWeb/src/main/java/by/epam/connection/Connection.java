@@ -4,9 +4,16 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.http.HTTPRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Connection {
-	final static String sesameServer = "http://localhost/openrdf-sesame";
+	private static final Logger logger = LoggerFactory
+			.getLogger(Connection.class);
+
+	final static String port = "80";
+	final static String sesameServer = "http://localhost:" + port
+			+ "/openrdf-sesame";
 	final static String repositoryID = "db";
 	private static RepositoryConnection conn;
 	private static Repository rep;
@@ -21,13 +28,25 @@ public class Connection {
 		try {
 			rep.initialize();
 			conn = rep.getConnection();
-		} catch (RepositoryException e) {
-			// TODO Auto-generated catch block
+		} catch (RepositoryException e) { // TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	public static synchronized RepositoryConnection getConnection() {
+		/*rep = new HTTPRepository(sesameServer, repositoryID);
+		try {
+			// RemoteRepositoryManager manager = new
+			// RemoteRepositoryManager(sesameServer);
+			// manager.initialize();
+			// rep = manager.getRepository(repositoryID);
+			// rep = manager.getRepository(repositoryID);
+			rep.initialize();
+			conn = rep.getConnection();
+		} catch (RepositoryException e) {
+			logger.error("Error on creating repository connection", e);
+		}*/
+		// =========[no singleton]==================
 		return conn;
 	}
 

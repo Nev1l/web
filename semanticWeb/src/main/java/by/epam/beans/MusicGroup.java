@@ -44,4 +44,10 @@ public class MusicGroup {
 		super();
 	}
 
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "[MusicGroup:"+name+", url="+image+"]";
+	}
+
 }

@@ -23,7 +23,7 @@ import by.epam.implem.WorkImpement;
 @Controller
 public class HomeController {
 	@Autowired
-	private WorkImpement work; 
+	private WorkImpement work;
 	private static final Logger logger = LoggerFactory
 			.getLogger(HomeController.class);
 
@@ -33,7 +33,8 @@ public class HomeController {
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String home(HttpServletRequest req, HttpServletResponse res) {
 		List<MusicGroup> groupList = new ArrayList<MusicGroup>();
-		groupList=work.getGroups();
+		groupList = work.getGroups();
+		logger.info("groups:" + groupList);
 		return "home";
 	}
 
