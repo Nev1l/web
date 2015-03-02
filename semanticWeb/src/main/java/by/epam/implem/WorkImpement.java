@@ -66,9 +66,9 @@ public class WorkImpement implements WorkDAO {
 		MusicGroup musicGroup = null;
 		try {
 			String queryString = prefixes
-					+ "SELECT ?name ?image ?description WHERE {?group rdf:type :MusicGroup. ?group :name ?name. filter regex(?name,"
+					+ "SELECT ?name ?image ?description WHERE {?group rdf:type :MusicGroup. ?group :name ?name. filter regex(?name,'"
 					+ groupName
-					+ ",\"i\"). ?group :image ?image. ?group rdfs:comment ?description}";
+					+ "',\"i\"). ?group :image ?image. ?group rdfs:comment ?description}";
 			logger.debug(queryString);
 			TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL,
 					queryString);
@@ -142,11 +142,10 @@ public class WorkImpement implements WorkDAO {
 		return list;
 	}
 
-	public List<MusicArtist> getArtists(String groupName) {
+	public Map<String,MusicArtist> getArtists(String groupName) {
 		prefixes = getPrefixes();
-		List<MusicArtist> list = new ArrayList<MusicArtist>();
+		Map<String,MusicArtist> list = new HashMap<String,MusicArtist>();
 		try {
-			// ?name. filter regex(?name,"+groupName+",\"i\")
 			String queryString = prefixes
 					+ "SELECT ?name ?image ?description WHERE {?artist rdf:type :MusicArtist. ?artist :name ?name. ?artist :image ?image. ?artist rdfs:comment ?description. ?artist :hasMusicGroup ?group. ?group :name \""
 					+ groupName + "\"}";
@@ -163,7 +162,7 @@ public class WorkImpement implements WorkDAO {
 					musicArtist.setName(name.stringValue());
 					musicArtist.setImage(image.stringValue());
 					musicArtist.setDescription(description.stringValue());
-					list.add(musicArtist);
+					list.put(musicArtist.getName(),musicArtist);
 				}
 			} finally {
 				result.close();

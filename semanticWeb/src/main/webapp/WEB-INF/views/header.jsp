@@ -22,7 +22,7 @@
 <div class="navbar">
 	<div class="navbar-inner">
 		<div class="brand">Music ontology</div>
-		<ul class="nav">
+		<ul class="nav" style="margin-left:20%">
 			<li><a href="<c:url value="/home.do"/>"><b>Main</b></a></li>
 			<li>
 				<div class="btn-toolbar">

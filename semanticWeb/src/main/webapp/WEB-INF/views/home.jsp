@@ -15,11 +15,11 @@
 						<div class="cover-image"
 							style="background-image: url('${group.image}');">
 							<img class="cover-image-image" src="${group.image}"> <a
-								href="<c:url value="/group?name='${group.name}'"/>"
+								href="<c:url value="/group?name=${group.name}"/>"
 								class="artist-grid-fill-link full-width-overlay"></a>
 							<div class="text-over-image text-over-image--block">
 								<div class="text-over-image-text">
-									<a href="<c:url value="/group?name='${group.name}'"/>"
+									<a href="<c:url value="/group?name=${group.name}"/>"
 										class="artist-grid-item-heading-link">
 										<h3>${group.name}</h3>
 									</a> <a href="/tag/electronic">electronic</a> <a href="/tag/dance">dance</a>

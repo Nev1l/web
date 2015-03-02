@@ -1,12 +1,13 @@
 package by.epam.beans;
 
 import java.util.List;
+import java.util.Map;
 
 public class MusicGroup {
 	private String name;
 	private String image;
 	private String description;
-	private List<MusicArtist> musicArtistList;
+	private Map<String, MusicArtist> musicArtistList;
 	private List<Genre> genreList;
 
 	public String getName() {
@@ -33,14 +34,6 @@ public class MusicGroup {
 		this.image = image;
 	}
 
-	public List<MusicArtist> getMusicArtistList() {
-		return musicArtistList;
-	}
-
-	public void setMusicArtistList(List<MusicArtist> musicArtistList) {
-		this.musicArtistList = musicArtistList;
-	}
-
 	public List<Genre> getGenreList() {
 		return genreList;
 	}
@@ -53,10 +46,18 @@ public class MusicGroup {
 		super();
 	}
 
+	public Map<String, MusicArtist> getMusicArtistList() {
+		return musicArtistList;
+	}
+
+	public void setMusicArtistList(Map<String, MusicArtist> musicArtistList) {
+		this.musicArtistList = musicArtistList;
+	}
+
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return "[MusicGroup:" + name + ", url=" + image + "]"+musicArtistList;
+		return "[MusicGroup:" + name + ", url=" + image + "]" + musicArtistList;
 	}
 
 }

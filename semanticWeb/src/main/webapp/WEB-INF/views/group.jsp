@@ -15,16 +15,16 @@
 			aria-expanded="false" aria-controls="collapseMembers"> Members: </a>
 		<div class="collapse" id="collapseMembers">
 			<ul>
-				<c:forEach var="artist" items="${GROUP.musicArtistList}"
+				<c:forEach var="entry" items="${GROUP.musicArtistList}"
 					varStatus="status">
+					<c:set var="artist" value="${entry.value}"/>
 					<li><button type="button" data-toggle="collapse"
 							data-target="#collapse${status.index}" aria-expanded="false"
 							aria-controls="collapseExample">+</button> <a
-						href="<c:url value="/artist?name='${artist.name}'"/>">${artist.name}</a>
+						href="<c:url value="/artist?groupName=${GROUP.name}&artistName=${artist.name}"/>">${artist.name}</a>
 						<div class="collapse" id="collapse${status.index}">
 							<div class="well">
 								<img width="320" height="240" src="${artist.image}" />
-								<%-- <div>${artist.description}</div> --%>
 							</div>
 						</div></li>
 				</c:forEach>

@@ -1,5 +1,7 @@
 package by.epam.controllers;
 
+import java.util.Map.Entry;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,14 +24,17 @@ public class ArtistController {
 	@Autowired
 	private WorkImpement work;
 	private static final Logger logger = LoggerFactory
-			.getLogger(GroupController.class);
+			.getLogger(ArtistController.class);
 
 	@RequestMapping(value = "/artist", method = RequestMethod.GET)
-	public String group(HttpServletRequest req, HttpServletResponse res,
-			@RequestParam(value = "name", required = false) String name) {
-		//MusicArtist artist = work.getGroup(name);
-		logger.info("artist name:" );
-		//req.setAttribute(ConstsJSP.ARTIST, artist);
+	public String group(
+			HttpServletRequest req,
+			HttpServletResponse res,
+			@RequestParam(value = "groupName", required = false) String groupName,
+			@RequestParam(value = "artistName", required = false) String artistName) {
+		MusicGroup group = work.getGroup(groupName);
+		req.setAttribute(ConstsJSP.GROUP, group);
+		req.setAttribute(ConstsJSP.ARTIST,  group.getMusicArtistList().get(artistName));
 		return ConstsJSP.artistPage;
 	}
 
