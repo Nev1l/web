@@ -6,25 +6,30 @@
 </head>
 <body>
 	<%@ include file="header.jsp"%>
-	<form class="relative intro-search-container" method="get"
-		action="/search">
-		<input type="text" name="q" size="26" class="js-search search-box">
-		<input type="hidden" name="from" value="ac">
-		<button type="submit" class="search-submit iconleft iconleft--search"
-			title="Search"></button>
-	</form>
-	<ul class="artist-grid-items clearit">
-		<li
-			class=" first item-1  item-2n-plus-1  item-3n-plus-1  item-4n-plus-1  artist-grid-item g">
-			<img class="cover-image-image"
-			src="http://userserve-ak.last.fm/serve/500/210128/Muse.jpg" />
-			<h3>Muse</h3>
-		</li>
-
-	</ul>
-	ATATATATATA
-	<c:forEach var="group" items="${GROUPS}">
-		<div>${group.name}</div>
-	</c:forEach>
+	<div class="row well">
+		<div class="span7">
+			<c:forEach var="group" items="${GROUPS}">
+				<ul class="artist-grid-items clearit">
+					<li
+						class=" first item-1  item-2n-plus-1  item-3n-plus-1  item-4n-plus-1  artist-grid-item g">
+						<div class="cover-image"
+							style="background-image: url('${group.image}');">
+							<img class="cover-image-image" src="${group.image}"> <a
+								href="<c:url value="/group?name='${group.name}'"/>"
+								class="artist-grid-fill-link full-width-overlay"></a>
+							<div class="text-over-image text-over-image--block">
+								<div class="text-over-image-text">
+									<a href="<c:url value="/group?name='${group.name}'"/>"
+										class="artist-grid-item-heading-link">
+										<h3>${group.name}</h3>
+									</a> <a href="/tag/electronic">electronic</a> <a href="/tag/dance">dance</a>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</c:forEach>
+		</div>
+	</div>
 </body>
 </html>
