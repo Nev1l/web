@@ -6,8 +6,8 @@
 </head>
 <body>
 	<%@ include file="header.jsp"%>
-	<div class="span5">
-	</div>
+	<%@ include file="panelGenres.jsp"%>
+	<div class="span1"></div>
 	<div class="span7">
 		<div class="well">
 			<h2>

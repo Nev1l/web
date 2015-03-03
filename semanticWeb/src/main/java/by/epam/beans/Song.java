@@ -4,9 +4,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class Song {
-	// album name
-	// performer
-
 	private String name;
 	private String text;
 	private String downloadURL;

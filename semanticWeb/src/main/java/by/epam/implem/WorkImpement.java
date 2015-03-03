@@ -2,8 +2,10 @@ package by.epam.implem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Namespace;
@@ -37,7 +39,7 @@ public class WorkImpement implements WorkDAO {
 	public WorkImpement() {
 		super();
 		con = Connection.getConnection();
-		// this.prefixes=getPrefixes();
+		//this.prefixes=getPrefixes();
 	}
 
 	public void getSong() {
@@ -62,13 +64,15 @@ public class WorkImpement implements WorkDAO {
 			logger.error(e.getMessage());
 		}
 	}
-	
+
 	public List<Song> getSongs(String albumName) {
 		prefixes = getPrefixes();
 		List<Song> albumSongs = new ArrayList<Song>();
 		try {
 			String queryString = prefixes
-					+ "SELECT ?name ?text  WHERE {?song :isSongOfAlbum ?album. ?album :name \""+albumName+"\". ?song :name ?name. ?song rdfs:comment ?text}";
+					+ "SELECT ?name ?text  WHERE {?song :isSongOfAlbum ?album. ?album :name \""
+					+ albumName
+					+ "\". ?song :name ?name. ?song rdfs:comment ?text}";
 			TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL,
 					queryString);
 			TupleQueryResult result = tupleQuery.evaluate();
@@ -77,12 +81,12 @@ public class WorkImpement implements WorkDAO {
 					BindingSet bindingSet = result.next();
 					Value name = bindingSet.getValue("name");
 					Value text = bindingSet.getValue("text");
-					//Value download = bindingSet.getValue("download");
+					// Value download = bindingSet.getValue("download");
 					Song song = new Song();
 					song.setName(name.stringValue());
 					song.setText(text.stringValue());
-					//song.setDownloadURL(download.stringValue());
-					//song.setGenreList(genreList);
+					// song.setDownloadURL(download.stringValue());
+					song.setGenreList(getGenres(song.getName()));
 					albumSongs.add(song);
 				}
 			} finally {
@@ -128,7 +132,7 @@ public class WorkImpement implements WorkDAO {
 		}
 		return musicGroup;
 	}
-
+//=============================[End prefixes changes]=======================
 	public List<MusicGroup> getGroups() {
 		prefixes = getPrefixes();
 		List<MusicGroup> list = new ArrayList<MusicGroup>();
@@ -158,28 +162,66 @@ public class WorkImpement implements WorkDAO {
 		return list;
 	}
 
-	public List<Genre> getGenres() {
+	
+	public Set<Genre> getAllGenres() {
 		prefixes = getPrefixes();
-		List<Genre> list = new ArrayList<Genre>();
-		/*
-		 * try { String queryString = prefixes +
-		 * "SELECT ?name WHERE {  ?genre rdfs:subClassOf :Genre. ?igenre rdf:type ?genre. ?igenre :name ?name. ?igenre :image ?image}"
-		 * ; TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL,
-		 * queryString); TupleQueryResult result = tupleQuery.evaluate(); try {
-		 * while (result.hasNext()) { BindingSet bindingSet = result.next();
-		 * Value name = bindingSet.getValue("name"); Value image =
-		 * bindingSet.getValue("image"); MusicGroup musicGroup = new
-		 * MusicGroup(); musicGroup.setName(name.stringValue());
-		 * musicGroup.setImage(image.stringValue()); list.add(musicGroup); } }
-		 * finally { result.close(); } } catch (OpenRDFException e) {
-		 * logger.error(e.getMessage()); }
-		 */
+		Set<Genre> list = new LinkedHashSet<Genre>();
+		try {
+			//. ?genre rdfs:comment ?description
+			String queryString = prefixes
+					+ "SELECT ?name WHERE {?s :hasGenre ?genre. ?genre :name ?name}";
+			TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL,
+					queryString);
+			TupleQueryResult result = tupleQuery.evaluate();
+			try {
+				while (result.hasNext()) {
+					BindingSet bindingSet = result.next();
+					Value name = bindingSet.getValue("name");
+					//Value description = bindingSet.getValue("description");
+					Genre genre = new Genre();
+					genre.setName(name.stringValue());
+					//genre.setDescription(description.stringValue());
+					list.add(genre);
+				}
+			} finally {
+				result.close();
+			}
+		} catch (OpenRDFException e) {
+			logger.error(e.getMessage());
+		}
+		return list;
+	}
+	
+	public Set<Genre> getGenres(String songName) {
+		prefixes = getPrefixes();
+		Set<Genre> list = new LinkedHashSet<Genre>();
+		try {
+			String queryString = prefixes
+					+ "SELECT ?name WHERE {?song :hasGenre ?genre. ?song :name \""+songName+"\". ?genre :name ?name}";
+			TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL,
+					queryString);
+			TupleQueryResult result = tupleQuery.evaluate();
+			try {
+				while (result.hasNext()) {
+					BindingSet bindingSet = result.next();
+					Value name = bindingSet.getValue("name");
+					//Value image = bindingSet.getValue("image");
+					Genre genre = new Genre();
+					genre.setName(name.stringValue());
+					list.add(genre);
+				}
+			} finally {
+				result.close();
+			}
+		} catch (OpenRDFException e) {
+			logger.error(e.getMessage());
+		}
 		return list;
 	}
 
-	public Map<String,MusicArtist> getArtists(String groupName) {
+	public Map<String, MusicArtist> getArtists(String groupName) {
 		prefixes = getPrefixes();
-		Map<String,MusicArtist> list = new HashMap<String,MusicArtist>();
+		Map<String, MusicArtist> list = new HashMap<String, MusicArtist>();
 		try {
 			String queryString = prefixes
 					+ "SELECT ?name ?image ?description WHERE {?artist rdf:type :MusicArtist. ?artist :name ?name. ?artist :image ?image. ?artist rdfs:comment ?description. ?artist :hasMusicGroup ?group. ?group :name \""
@@ -197,7 +239,7 @@ public class WorkImpement implements WorkDAO {
 					musicArtist.setName(name.stringValue());
 					musicArtist.setImage(image.stringValue());
 					musicArtist.setDescription(description.stringValue());
-					list.put(musicArtist.getName(),musicArtist);
+					list.put(musicArtist.getName(), musicArtist);
 				}
 			} finally {
 				result.close();
@@ -208,12 +250,14 @@ public class WorkImpement implements WorkDAO {
 		return list;
 	}
 
-	public Map<String,Album> getAlbums(String groupName) {
+	public Map<String, Album> getAlbums(String groupName) {
 		prefixes = getPrefixes();
-		Map<String,Album> list = new HashMap<String,Album>();
+		Map<String, Album> list = new HashMap<String, Album>();
 		try {
 			String queryString = prefixes
-					+ "SELECT ?name ?image ?year WHERE {?album :hasPerformer ?group. ?group :name \""+ groupName + "\". ?album :name ?name. ?album :image ?image. ?album :year ?year}";
+					+ "SELECT ?name ?image ?year WHERE {?album :hasPerformer ?group. ?group :name \""
+					+ groupName
+					+ "\". ?album :name ?name. ?album :image ?image. ?album :year ?year}";
 			TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL,
 					queryString);
 			TupleQueryResult result = tupleQuery.evaluate();
@@ -228,7 +272,7 @@ public class WorkImpement implements WorkDAO {
 					musicAlbum.setImage(image.stringValue());
 					musicAlbum.setYear(description.stringValue());
 					musicAlbum.setSongList(getSongs(musicAlbum.getName()));
-					list.put(name.stringValue(),musicAlbum);
+					list.put(name.stringValue(), musicAlbum);
 				}
 			} finally {
 				result.close();
@@ -238,6 +282,7 @@ public class WorkImpement implements WorkDAO {
 		}
 		return list;
 	}
+
 	private String getPrefixes() {
 		return getPrefixes(getPrefixMap(Connection.getConnection()));
 	}

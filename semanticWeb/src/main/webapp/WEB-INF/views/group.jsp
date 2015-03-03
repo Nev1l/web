@@ -6,12 +6,18 @@
 </head>
 <body>
 	<%@ include file="header.jsp"%>
-	<div class="span5"></div>
+	<%@ include file="panelGenres.jsp"%>
+	<div class="span1"></div>
 	<div class="span7">
 		<a href="<c:url value="/home.do"/>"><b>All group</b></a>
 		<div class="well">
 			<h2>${GROUP.name}</h2>
 			<img width="320" height="240" src="${GROUP.image}">
+		</div>
+		<div>
+			<c:forEach var="genre" items="${GROUP.genreList}">
+				<a href="<c:url value="/genre?genreName=${genre.name}"/>"><span class="label label-warning" style="margin-top: 5px;">${genre.name}</span></a>
+			</c:forEach>
 		</div>
 		<a data-toggle="collapse" href="#collapseMembers"
 			aria-expanded="false" aria-controls="collapseMembers"> Members </a>
@@ -32,7 +38,6 @@
 				</c:forEach>
 			</ul>
 		</div>
-		<div>Genres labels:</div>
 		<div>
 			<h3>Description:</h3>
 			<div>${GROUP.description}</div>
@@ -40,7 +45,7 @@
 	</div>
 	<div class="span3">
 		<div>
-			<b>Albums of </b><a href="/group?name=${GROUP.name}">${GROUP.name}</a>
+			<b>Albums of </b><a href="<c:url value="/group?name=${GROUP.name}"/>">${GROUP.name}</a>
 		</div>
 		<div class="well">
 			<ul>
@@ -52,8 +57,7 @@
 							<div class="well">
 								<img width="75" height="60" src="${album.image}" />
 							</div>
-					</a>
-					</li>
+					</a></li>
 				</c:forEach>
 			</ul>
 		</div>

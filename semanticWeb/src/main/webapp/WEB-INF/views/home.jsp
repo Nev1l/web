@@ -6,33 +6,32 @@
 </head>
 <body>
 	<%@ include file="header.jsp"%>
-	<div class="span5"></div>
-	<div class="span5">
-	<div class="row well">
-			<c:forEach var="group" items="${GROUPS}">
-				<ul class="artist-grid-items clearit">
-					<li
-						class=" first item-1  item-2n-plus-1  item-3n-plus-1  item-4n-plus-1  artist-grid-item g">
-						<div class="cover-image"
-							style="background-image: url('${group.image}');">
-							<img class="cover-image-image" src="${group.image}"> <a
-								href="<c:url value="/group?name=${group.name}"/>"
-								class="artist-grid-fill-link full-width-overlay"></a>
-							<div class="text-over-image text-over-image--block">
-								<div class="text-over-image-text">
-									<a href="<c:url value="/group?name=${group.name}"/>"
-										class="artist-grid-item-heading-link">
-										<h3>${group.name}</h3>
-									</a> <a href="/tag/electronic">electronic</a> <a href="/tag/dance">dance</a>
-								</div>
+	<%@ include file="panelGenres.jsp"%>
+	<div class="span12">
+			<c:forEach var="group" items="${GROUPS}" varStatus="status">
+			<!-- item-1  item-3n-plus-1   -->
+				<div class=" artist-grid-item g">
+					<div class="col-xs-6 col-md-3 cover-image"
+						style="background-image: url('${group.image}');">
+						<img class="cover-image-image" src="${group.image}"> <a
+							href="<c:url value="/group?name=${group.name}"/>"
+							class="artist-grid-fill-link full-width-overlay"></a>
+						<div class="text-over-image text-over-image--block">
+							<div class="text-over-image-text">
+								<a href="<c:url value="/group?name=${group.name}"/>"
+									class="artist-grid-item-heading-link">
+									<h3>${group.name}</h3>
+								</a>
+								<c:forEach var="genre" items="${group.genreList}"
+									varStatus="status">
+									<c:if test="${!status.first}">/</c:if>
+									<a href="<c:url value="/genre?genreName=${genre.name}"/>">${genre.name}</a>
+								</c:forEach>
 							</div>
 						</div>
-					</li>
-				</ul>
+					</div>
+				</div>
 			</c:forEach>
-		</div>
-	</div>
-	<div class="span3">
 	</div>
 </body>
 </html>
