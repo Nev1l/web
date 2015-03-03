@@ -25,7 +25,7 @@
 	</div>
 	<div class="span3">
 		<div>
-			<b>Others members of</b> <a href="">${GROUP.name}</a>
+			<b>Others members of</b> <a href="/group?name=${GROUP.name}">${GROUP.name}</a>
 		</div>
 		<div class="well">
 			<ul>

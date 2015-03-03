@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import by.epam.beans.MusicGroup;
 import by.epam.consts.ConstsJSP;
-import by.epam.dao.WorkDAO;
 import by.epam.implem.WorkImpement;
 
 /**
@@ -35,7 +34,6 @@ public class HomeController {
 	public String home(HttpServletRequest req, HttpServletResponse res) {
 		List<MusicGroup> groupList = new ArrayList<MusicGroup>();
 		groupList = work.getGroups();
-		logger.info("groups:" + groupList);
 		req.setAttribute(ConstsJSP.GROUPS, groupList);
 		return "home";
 	}

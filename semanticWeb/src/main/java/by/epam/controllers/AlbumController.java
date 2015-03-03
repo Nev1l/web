@@ -16,23 +16,21 @@ import by.epam.consts.ConstsJSP;
 import by.epam.implem.WorkImpement;
 
 @Controller
-public class ArtistController {
+public class AlbumController {
 
 	@Autowired
 	private WorkImpement work;
 	private static final Logger logger = LoggerFactory
-			.getLogger(ArtistController.class);
+			.getLogger(AlbumController.class);
 
-	@RequestMapping(value = "/artist", method = RequestMethod.GET)
-	public String group(
-			HttpServletRequest req,
-			HttpServletResponse res,
+	@RequestMapping(value = "/album", method = RequestMethod.GET)
+	public String group(HttpServletRequest req, HttpServletResponse res,
 			@RequestParam(value = "groupName", required = false) String groupName,
-			@RequestParam(value = "artistName", required = false) String artistName) {
+			@RequestParam(value = "albumName", required = false) String albumName) {
 		MusicGroup group = work.getGroup(groupName);
+		logger.info("group name:" + groupName + " obj=" + group);
 		req.setAttribute(ConstsJSP.GROUP, group);
-		req.setAttribute(ConstsJSP.ARTIST,  group.getMusicArtistList().get(artistName));
-		return ConstsJSP.artistPage;
+		req.setAttribute(ConstsJSP.ALBUM,  group.getMusicAlbums().get(albumName));
+		return ConstsJSP.albumPage;
 	}
-
 }

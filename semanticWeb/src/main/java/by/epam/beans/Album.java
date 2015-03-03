@@ -6,8 +6,8 @@ import java.util.Set;
 
 public class Album {
 	private String name;
-	private int year;
-	private String performer;
+	private String year;
+	private String image;
 	private List<Song> songList;
 	private Set<Genre> genreList = new LinkedHashSet<Genre>();
 
@@ -23,20 +23,12 @@ public class Album {
 		this.name = name;
 	}
 
-	public int getYear() {
+	public String getYear() {
 		return year;
 	}
 
-	public void setYear(int year) {
+	public void setYear(String year) {
 		this.year = year;
-	}
-
-	public String getPerformer() {
-		return performer;
-	}
-
-	public void setPerformer(String performer) {
-		this.performer = performer;
 	}
 
 	public List<Song> getSongList() {
@@ -52,6 +44,19 @@ public class Album {
 
 	public Set<Genre> getGenreList() {
 		return genreList;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	@Override
+	public String toString() {
+		return "Album [name=" + name + ", year=" + year + "]";
 	}
 
 }

@@ -6,8 +6,9 @@
 </head>
 <body>
 	<%@ include file="header.jsp"%>
+	<div class="span5"></div>
+	<div class="span5">
 	<div class="row well">
-		<div class="span7">
 			<c:forEach var="group" items="${GROUPS}">
 				<ul class="artist-grid-items clearit">
 					<li
@@ -30,6 +31,8 @@
 				</ul>
 			</c:forEach>
 		</div>
+	</div>
+	<div class="span3">
 	</div>
 </body>
 </html>

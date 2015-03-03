@@ -1,14 +1,16 @@
 package by.epam.beans;
 
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class MusicGroup {
 	private String name;
 	private String image;
 	private String description;
 	private Map<String, MusicArtist> musicArtistList;
-	private List<Genre> genreList;
+	private Map<String, Album> musicAlbums;
+	private Set<Genre> genreList = new LinkedHashSet<Genre>();
 
 	public String getName() {
 		return name;
@@ -34,11 +36,11 @@ public class MusicGroup {
 		this.image = image;
 	}
 
-	public List<Genre> getGenreList() {
+	public Set<Genre> getGenreList() {
 		return genreList;
 	}
 
-	public void setGenreList(List<Genre> genreList) {
+	public void setGenreList(Set<Genre> genreList) {
 		this.genreList = genreList;
 	}
 
@@ -52,6 +54,17 @@ public class MusicGroup {
 
 	public void setMusicArtistList(Map<String, MusicArtist> musicArtistList) {
 		this.musicArtistList = musicArtistList;
+	}
+
+	public Map<String, Album> getMusicAlbums() {
+		return musicAlbums;
+	}
+
+	public void setMusicAlbums(Map<String, Album> musicAlbums) {
+		this.musicAlbums = musicAlbums;
+		for (Map.Entry<String, Album> entry : musicAlbums.entrySet()) {
+			this.genreList.addAll(entry.getValue().getGenreList());
+		}
 	}
 
 	@Override

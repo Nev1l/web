@@ -19,9 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import by.epam.beans.Album;
 import by.epam.beans.Genre;
 import by.epam.beans.MusicArtist;
 import by.epam.beans.MusicGroup;
+import by.epam.beans.Song;
 import by.epam.connection.Connection;
 import by.epam.dao.WorkDAO;
 
@@ -60,6 +62,37 @@ public class WorkImpement implements WorkDAO {
 			logger.error(e.getMessage());
 		}
 	}
+	
+	public List<Song> getSongs(String albumName) {
+		prefixes = getPrefixes();
+		List<Song> albumSongs = new ArrayList<Song>();
+		try {
+			String queryString = prefixes
+					+ "SELECT ?name ?text  WHERE {?song :isSongOfAlbum ?album. ?album :name \""+albumName+"\". ?song :name ?name. ?song rdfs:comment ?text}";
+			TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL,
+					queryString);
+			TupleQueryResult result = tupleQuery.evaluate();
+			try {
+				while (result.hasNext()) {
+					BindingSet bindingSet = result.next();
+					Value name = bindingSet.getValue("name");
+					Value text = bindingSet.getValue("text");
+					//Value download = bindingSet.getValue("download");
+					Song song = new Song();
+					song.setName(name.stringValue());
+					song.setText(text.stringValue());
+					//song.setDownloadURL(download.stringValue());
+					//song.setGenreList(genreList);
+					albumSongs.add(song);
+				}
+			} finally {
+				result.close();
+			}
+		} catch (OpenRDFException e) {
+			logger.error(e.getMessage());
+		}
+		return albumSongs;
+	}
 
 	public MusicGroup getGroup(String groupName) {
 		prefixes = getPrefixes();
@@ -85,6 +118,7 @@ public class WorkImpement implements WorkDAO {
 					musicGroup.setDescription(description.stringValue());
 					musicGroup
 							.setMusicArtistList(getArtists(name.stringValue()));
+					musicGroup.setMusicAlbums(getAlbums(musicGroup.getName()));
 				}
 			} finally {
 				result.close();
@@ -112,6 +146,7 @@ public class WorkImpement implements WorkDAO {
 					MusicGroup musicGroup = new MusicGroup();
 					musicGroup.setName(name.stringValue());
 					musicGroup.setImage(image.stringValue());
+					musicGroup.setMusicAlbums(getAlbums(musicGroup.getName()));
 					list.add(musicGroup);
 				}
 			} finally {
@@ -173,6 +208,36 @@ public class WorkImpement implements WorkDAO {
 		return list;
 	}
 
+	public Map<String,Album> getAlbums(String groupName) {
+		prefixes = getPrefixes();
+		Map<String,Album> list = new HashMap<String,Album>();
+		try {
+			String queryString = prefixes
+					+ "SELECT ?name ?image ?year WHERE {?album :hasPerformer ?group. ?group :name \""+ groupName + "\". ?album :name ?name. ?album :image ?image. ?album :year ?year}";
+			TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL,
+					queryString);
+			TupleQueryResult result = tupleQuery.evaluate();
+			try {
+				while (result.hasNext()) {
+					BindingSet bindingSet = result.next();
+					Value name = bindingSet.getValue("name");
+					Value image = bindingSet.getValue("image");
+					Value description = bindingSet.getValue("year");
+					Album musicAlbum = new Album();
+					musicAlbum.setName(name.stringValue());
+					musicAlbum.setImage(image.stringValue());
+					musicAlbum.setYear(description.stringValue());
+					musicAlbum.setSongList(getSongs(musicAlbum.getName()));
+					list.put(name.stringValue(),musicAlbum);
+				}
+			} finally {
+				result.close();
+			}
+		} catch (OpenRDFException e) {
+			logger.error(e.getMessage());
+		}
+		return list;
+	}
 	private String getPrefixes() {
 		return getPrefixes(getPrefixMap(Connection.getConnection()));
 	}
