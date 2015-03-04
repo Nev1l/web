@@ -2,12 +2,12 @@
 <%@ page session="false"%>
 <html>
 <head>
-<title>Home</title>
+<title>Artist</title>
 </head>
 <body>
 	<%@ include file="header.jsp"%>
 	<%@ include file="panelGenres.jsp"%>
-	<div class="span1"></div>
+	<div class="span2"></div>
 	<div class="span7">
 		<div class="well">
 			<h2>

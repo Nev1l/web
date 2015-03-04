@@ -1,5 +1,6 @@
 package by.epam.beans;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,7 +9,7 @@ public class Album {
 	private String name;
 	private String year;
 	private String image;
-	private List<Song> songList;
+	private List<Song> songList = new ArrayList<Song>();
 	private Set<Genre> genreList = new LinkedHashSet<Genre>();
 
 	public Album() {
@@ -42,6 +43,13 @@ public class Album {
 		}
 	}
 
+	public void songAdd(Song song){
+		if(!songList.contains(song)){
+			songList.add(song);
+			genreList.addAll(song.getGenreList());
+		}
+		
+	}
 	public Set<Genre> getGenreList() {
 		return genreList;
 	}
@@ -57,6 +65,31 @@ public class Album {
 	@Override
 	public String toString() {
 		return "Album [name=" + name + ", year=" + year + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Album other = (Album) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
 	}
 
 }

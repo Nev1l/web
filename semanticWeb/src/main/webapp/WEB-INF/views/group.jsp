@@ -7,7 +7,7 @@
 <body>
 	<%@ include file="header.jsp"%>
 	<%@ include file="panelGenres.jsp"%>
-	<div class="span1"></div>
+	<div class="span2"></div>
 	<div class="span7">
 		<a href="<c:url value="/home.do"/>"><b>All group</b></a>
 		<div class="well">

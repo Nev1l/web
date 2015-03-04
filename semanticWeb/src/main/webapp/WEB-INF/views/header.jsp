@@ -26,10 +26,10 @@
 		<ul class="nav" style="margin-left: 31%">
 			<li><a href="<c:url value="/home.do"/>"><b>Main</b></a></li>
 			<li>
-				<div class="btn-toolbar">
-					<form id="search" class="relative intro-search-container"
+				<div class="btn-toolbar" ng-app="app">
+					<form id="search" ng-controller="SetController" class="relative intro-search-container"
 						method="get" action="/search">
-						<input type="text" name="q" size="26" placeholder="music search"
+						</td> <input type="text" name="q" size="26" placeholder="music search"
 							class="js-search search-box"> <input type="hidden"
 							name="from" value="ac"> <a href="#"
 							class="btn-default btn-sm"
@@ -38,11 +38,12 @@
 							class="glyphicon glyphicon-search" aria-hidden="true"></span>
 							Search
 						</a>
-						<!--  -->
 					</form>
-					<!--  -->
 				</div>
 			</li>
 		</ul>
 	</div>
+	<!-- <select ng-model="option" ng-change="setOption()">
+							<option ng-repeat="o in options">{{o}}</option>
+						</select> -->
 </div>

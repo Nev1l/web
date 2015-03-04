@@ -9,7 +9,6 @@
 	<%@ include file="panelGenres.jsp"%>
 	<div class="span12">
 			<c:forEach var="group" items="${GROUPS}" varStatus="status">
-			<!-- item-1  item-3n-plus-1   -->
 				<div class=" artist-grid-item g">
 					<div class="col-xs-6 col-md-3 cover-image"
 						style="background-image: url('${group.image}');">

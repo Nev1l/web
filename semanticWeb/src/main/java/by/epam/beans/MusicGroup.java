@@ -1,15 +1,16 @@
 package by.epam.beans;
 
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class MusicGroup {
+public class MusicGroup implements Performer{
 	private String name;
 	private String image;
 	private String description;
-	private Map<String, MusicArtist> musicArtistList;
-	private Map<String, Album> musicAlbums;
+	private Map<String, MusicArtist> musicArtistList = new HashMap<String, MusicArtist>();
+	private Map<String, Album> musicAlbums = new HashMap<String, Album>();
 	private Set<Genre> genreList = new LinkedHashSet<Genre>();
 
 	public String getName() {
@@ -71,6 +72,31 @@ public class MusicGroup {
 	public String toString() {
 		// TODO Auto-generated method stub
 		return "[MusicGroup:" + name + ", url=" + image + "]" + musicArtistList;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MusicGroup other = (MusicGroup) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
 	}
 
 }

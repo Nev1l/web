@@ -39,23 +39,52 @@ public class WorkImpement implements WorkDAO {
 	public WorkImpement() {
 		super();
 		con = Connection.getConnection();
-		//this.prefixes=getPrefixes();
 	}
 
-	public void getSong() {
+	public Map<String, MusicGroup> getGroupsByGenre(String genreName) {
 		prefixes = getPrefixes();
+		Map<String, MusicGroup> groupList = new HashMap<String, MusicGroup>();
 		try {
 			String queryString = prefixes
-					+ "SELECT ?song WHERE {?song <http://www.semanticweb.org/viktar_kapachou/ontologies/2015/1/untitled-ontology-7#hasGenre> ?g}";
+					+ "SELECT ?gName ?gDescription ?gImage ?aName ?aYear ?aImage ?name ?text WHERE {?s :hasGenre ?genre. ?genre :name \""
+					+ genreName
+					+ "\".  ?s :name ?name.  ?s rdfs:comment ?text.  ?s :isSongOfAlbum ?a.  ?a :name ?aName.  ?a :year ?aYear. ?a :image ?aImage.  ?a :hasPerformer ?g.  ?g :name ?gName.  ?g rdfs:comment ?gDescription. ?g :image ?gImage}";
 			TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL,
 					queryString);
 			TupleQueryResult result = tupleQuery.evaluate();
 			try {
-				while (result.hasNext()) { // iterate over the result
+				while (result.hasNext()) {
 					BindingSet bindingSet = result.next();
-					Value valueOfX = bindingSet.getValue("song");
-					// Value valueOfY = bindingSet.getValue("y");
-					System.out.println(valueOfX);
+					Value gName = bindingSet.getValue("gName");
+					Value gDescription = bindingSet.getValue("gDescription");
+					Value gImage = bindingSet.getValue("gImage");
+					Value aName = bindingSet.getValue("aName");
+					Value aImage = bindingSet.getValue("aImage");
+					Value aYear = bindingSet.getValue("aYear");
+					Value name = bindingSet.getValue("name");
+					Value text = bindingSet.getValue("text");
+					// Value download = bindingSet.getValue("download");
+					MusicGroup group = new MusicGroup();
+					group.setName(gName.stringValue());
+					group.setImage(gImage.stringValue());
+					group.setDescription(gDescription.stringValue());
+					Album album = new Album();
+					album.setImage(aImage.stringValue());
+					album.setName(aName.stringValue());
+					album.setYear(aYear.stringValue());
+					Song song = new Song();
+					song.setName(name.stringValue());
+					song.setText(text.stringValue());
+					// song.setDownloadURL(download.stringValue());
+					//song.setGenreList(getGenres(song.getName()));
+					if (!groupList.containsKey(group.getName())) {
+						groupList.put(group.getName(), group);
+					}
+					MusicGroup temp = groupList.get(group.getName());
+					if (!temp.getMusicAlbums().containsKey(album.getName())) {
+						temp.getMusicAlbums().put(album.getName(), album);
+					}
+					temp.getMusicAlbums().get(album.getName()).songAdd(song);
 				}
 			} finally {
 				result.close();
@@ -63,6 +92,35 @@ public class WorkImpement implements WorkDAO {
 		} catch (OpenRDFException e) {
 			logger.error(e.getMessage());
 		}
+		return groupList;
+	}
+
+	public Genre getGenreInfo(String genreName) {
+		//DOESN'T WORK! NOT USE
+		prefixes = getPrefixes();
+		Genre genre = new Genre();
+		try {
+			//. ?g rdfs:comment ?description
+			String queryString = prefixes
+					+ "SELECT ?description WHERE {?g :name \"" + genreName
+					+ "\"?g rdfs:comment ?description}";
+			TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL,
+					queryString);
+			TupleQueryResult result = tupleQuery.evaluate();
+			try {
+				if (result.hasNext()) {
+					BindingSet bindingSet = result.next();
+					Value description = bindingSet.getValue("description");
+					genre.setName(genreName);
+					genre.setDescription(description.stringValue());
+				}
+			} finally {
+				result.close();
+			}
+		} catch (OpenRDFException e) {
+			logger.error(e.getMessage());
+		}
+		return genre;
 	}
 
 	public List<Song> getSongs(String albumName) {
@@ -132,7 +190,8 @@ public class WorkImpement implements WorkDAO {
 		}
 		return musicGroup;
 	}
-//=============================[End prefixes changes]=======================
+
+	// ========[End prefixes changes]=====
 	public List<MusicGroup> getGroups() {
 		prefixes = getPrefixes();
 		List<MusicGroup> list = new ArrayList<MusicGroup>();
@@ -162,14 +221,13 @@ public class WorkImpement implements WorkDAO {
 		return list;
 	}
 
-	
 	public Set<Genre> getAllGenres() {
 		prefixes = getPrefixes();
 		Set<Genre> list = new LinkedHashSet<Genre>();
 		try {
-			//. ?genre rdfs:comment ?description
+			// . ?genre rdfs:comment ?description
 			String queryString = prefixes
-					+ "SELECT ?name WHERE {?s :hasGenre ?genre. ?genre :name ?name}";
+					+ "SELECT distinct ?name WHERE{?type rdfs:subClassOf* :Genre.?obj rdf:type owl:NamedIndividual.?obj rdf:type ?type.?obj :name ?name}";
 			TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL,
 					queryString);
 			TupleQueryResult result = tupleQuery.evaluate();
@@ -177,10 +235,10 @@ public class WorkImpement implements WorkDAO {
 				while (result.hasNext()) {
 					BindingSet bindingSet = result.next();
 					Value name = bindingSet.getValue("name");
-					//Value description = bindingSet.getValue("description");
+					// Value description = bindingSet.getValue("description");
 					Genre genre = new Genre();
 					genre.setName(name.stringValue());
-					//genre.setDescription(description.stringValue());
+					// genre.setDescription(description.stringValue());
 					list.add(genre);
 				}
 			} finally {
@@ -191,13 +249,14 @@ public class WorkImpement implements WorkDAO {
 		}
 		return list;
 	}
-	
+
 	public Set<Genre> getGenres(String songName) {
 		prefixes = getPrefixes();
 		Set<Genre> list = new LinkedHashSet<Genre>();
 		try {
 			String queryString = prefixes
-					+ "SELECT ?name WHERE {?song :hasGenre ?genre. ?song :name \""+songName+"\". ?genre :name ?name}";
+					+ "SELECT ?name WHERE {?song :hasGenre ?genre. ?song :name \""
+					+ songName + "\". ?genre :name ?name}";
 			TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL,
 					queryString);
 			TupleQueryResult result = tupleQuery.evaluate();
@@ -205,7 +264,7 @@ public class WorkImpement implements WorkDAO {
 				while (result.hasNext()) {
 					BindingSet bindingSet = result.next();
 					Value name = bindingSet.getValue("name");
-					//Value image = bindingSet.getValue("image");
+					// Value image = bindingSet.getValue("image");
 					Genre genre = new Genre();
 					genre.setName(name.stringValue());
 					list.add(genre);
