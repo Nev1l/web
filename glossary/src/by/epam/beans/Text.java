@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import by.epam.template.Case;
+import by.epam.template.DefaultCase;
+import by.epam.template.LowerCase;
+
 public class Text {
 	private List<Sentence> sentenceList = new ArrayList<Sentence>();
 
@@ -30,20 +34,27 @@ public class Text {
 		return sb.toString();
 	}
 
-	public void outputWords() {
-		for (Sentence sentence : getSentenceList()) {
-			for (Word w : sentence.getWordList()) {
-				System.out.println(w);
-			}
+	public void outputWords(boolean toLowerCase) {
+		for (Word w : getWordList(toLowerCase)) {
+			System.out.println(w);
 		}
 	}
 
-	public Set<Word> getSortedUniqueWordList() {
-		Set<Word> sortedUniqueList = new TreeSet<Word>();//LinkedHashSet
+	public List<Word> getWordList(boolean toLowerCase) {
+		Case c = toLowerCase ? new LowerCase() : new DefaultCase();
+		List<Word> wordList = new ArrayList<>();
 		for (Sentence sentence : getSentenceList()) {
 			for (Word w : sentence.getWordList()) {
-				sortedUniqueList.add(w);
+				wordList.add(c.getWord(w));
 			}
+		}
+		return wordList;
+	}
+
+	public Set<Word> getSortedUniqueWordList(List<Word> wordList) {
+		Set<Word> sortedUniqueList = new TreeSet<Word>();
+		for (Word w : wordList) {
+			sortedUniqueList.add(w);
 		}
 		return sortedUniqueList;
 	}

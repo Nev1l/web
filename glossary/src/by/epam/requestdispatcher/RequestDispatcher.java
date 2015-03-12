@@ -1,9 +1,5 @@
 package by.epam.requestdispatcher;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +12,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import by.epam.beans.Param;
-import by.epam.beans.Parser;
 import by.epam.beans.Request;
 import by.epam.beans.Response;
 import by.epam.beans.Word;
@@ -34,28 +29,24 @@ public class RequestDispatcher {
 	private void init(Set<Word> wordList) {
 		this.requests = new ArrayList<>(wordList.size());
 		for (Word word : wordList) {
-			requests.add(new Request(url, word.getWord().toLowerCase()));
+			requests.add(new Request(url, word.getWord()));
 		}
 	}
 
 	public Set<Param> start() {
+		List<Future<Response>> responses = new ArrayList<>(requests.size());
 		Set<Param> set = new TreeSet<>();
-		Future<Response> response;
 		try {
 			Iterator<Request> it = requests.iterator();
 			while (it.hasNext()) {
-				Request req = it.next();
-				response = executor.submit(req);
+				responses.add(executor.submit(it.next()));
+			}
+			for (int i = 0; i < responses.size(); i++) {
 				try {
-					String body = Parser.getWordTranlate(
-							inputStreamToString(response.get().getBody())
-									.toString().substring(4)).toLowerCase();
-					if (!body.isEmpty()) {
-						set.add(new Param(req.getWord(), body));
-					}
-				} catch (InterruptedException | ExecutionException
-						| IOException e) {
-					e.printStackTrace();
+					set.add(new Param(requests.get(i).getWord(), responses
+							.get(i).get().getWord()));
+				} catch (InterruptedException | ExecutionException e) {
+					//e.printStackTrace();
 				}
 			}
 		} finally {
@@ -67,17 +58,5 @@ public class RequestDispatcher {
 			}
 		}
 		return set;
-	}
-
-	private StringBuilder inputStreamToString(InputStream is)
-			throws IOException {
-		String line = "";
-		StringBuilder total = new StringBuilder();
-		BufferedReader rd = new BufferedReader(new InputStreamReader(is,
-				"UTF-8"));
-		while ((line = rd.readLine()) != null) {
-			total.append(line);
-		}
-		return total;
 	}
 }

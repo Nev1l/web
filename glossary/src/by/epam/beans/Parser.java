@@ -12,7 +12,7 @@ public class Parser {
 	private String REGEX_SIGN = "([\\p{InCyrillic}|\\w?-^\\d]{" + minLength
 			+ "," + maxLength + "})";
 	private static String REGEX_RU = "^([\\p{InCyrillic}]{4,})";
-	//private static String REGEX_ENG = "([\\w^\\d]{3,})";
+	// private static String REGEX_ENG = "([\\w^\\d]{3,})";
 	public final static int GROUP_1 = 1;
 	public final static int GROUP_2 = 2;
 	public final static int GROUP_3 = 3;
@@ -53,14 +53,13 @@ public class Parser {
 		return sentenceList;
 	}
 
-	public static String getWordTranlate(String value) {
+	public static String getWordTranlate(String value) throws Exception {
 		Pattern pattern = Pattern.compile(REGEX_RU);
 		Matcher matcher = pattern.matcher(value);
-		String word = "";
 		if (matcher.find()) {
-			word = matcher.group(GROUP_1);
+			return matcher.group(GROUP_1);
 		}
-		return word;
+		throw new Exception("Method didn't catch a translation word.");
 	}
 
 	private List<Word> parseToWord(String sentence) {

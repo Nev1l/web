@@ -1,6 +1,9 @@
 package by.epam.beans;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.Callable;
@@ -36,9 +39,21 @@ public class Request implements Callable<Response> {
 			conn.setRequestProperty("Content-Language", "ru");
 			conn.setRequestProperty("Accept",
 					"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+			return new Response(Parser.getWordTranlate(inputStreamToString(conn.getInputStream()).substring(4)));
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			//e1.printStackTrace();
+			throw new Exception(e1);
 		}
-		return new Response(conn.getInputStream());
+	}
+	
+	private String inputStreamToString(InputStream is) throws IOException {
+		String line = "";
+		StringBuilder total = new StringBuilder();
+		BufferedReader rd = new BufferedReader(new InputStreamReader(is,
+				"UTF-8"));
+		while ((line = rd.readLine()) != null) {
+			total.append(line);
+		}
+		return total.toString();
 	}
 }

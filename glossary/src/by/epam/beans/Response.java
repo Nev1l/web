@@ -1,15 +1,18 @@
 package by.epam.beans;
 
-import java.io.InputStream;
 
 public class Response {
-	private InputStream body;
+	private String word;
 
-	public Response(InputStream body) {
-		this.body = body;
+	public Response(String word) {
+		this.word = word;
 	}
 
-	public InputStream getBody() {
-		return body;
+	public String getWord() {
+		return word;
+	}
+
+	public String getBody(boolean toLowerCase){
+		return toLowerCase ? getWord() : getWord().toLowerCase();
 	}
 }
